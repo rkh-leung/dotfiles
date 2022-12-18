@@ -1,11 +1,15 @@
-local augroup = vim.api.nvim_create_augroup
-LepGroup = augroup("Leptanian", {})
+require("leptanian.set")
+require("leptanian.remap")
 
-require("leptanian.options")
-require("leptanian.packer")
+local augroup = vim.api.nvim_create_augroup
+local LeptanianGroup = augroup('Leptanian', {})
 
 local autocmd = vim.api.nvim_create_autocmd
 local yank_group = augroup('HighlightYank', {})
+
+function R(name)
+    require("plenary.reload").reload_module(name)
+end
 
 autocmd('TextYankPost', {
     group = yank_group,
@@ -18,21 +22,12 @@ autocmd('TextYankPost', {
     end,
 })
 
--- autocmd({"BufEnter", "BufWinEnter", "TabEnter"}, {
---     group = LepGroup,
---     pattern = "*.rs",
---     callback = function()
---         require("lsp_extensions").inlay_hints{}
---     end
--- })
-
-autocmd({"BufWritePre"}, {
-    group = LepGroup,
+autocmd({ "BufWritePre" }, {
+    group = LeptanianGroup,
     pattern = "*",
-    command = "%s/\\s\\+$//e",
+    command = [[%s/\s\+$//e]],
 })
 
 vim.g.netrw_browse_split = 0
 vim.g.netrw_banner = 0
 vim.g.netrw_winsize = 50
-
