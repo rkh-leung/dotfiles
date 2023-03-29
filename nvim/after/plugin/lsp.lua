@@ -1,9 +1,11 @@
-local lsp = require("lsp-zero")
-
-lsp.preset("recommended")
+local lsp = require('lsp-zero').preset({
+  name = 'minimal',
+  set_lsp_keymaps = true,
+  manage_nvim_cmp = true,
+  suggest_lsp_servers = false,
+})
 
 lsp.ensure_installed({
-  'sumneko_lua',
   'rust_analyzer',
 })
 
@@ -55,15 +57,15 @@ lsp.on_attach(function(client, bufnr)
   vim.keymap.set("i", "<C-h>", vim.lsp.buf.signature_help, opts)
 end)
 
-lsp.configure("sumneko_lua", {
-  settings = {
-    Lua = {
-      diagnostics = {
-        -- Get the language server to recognize the `vim` global
-        globals = {'vim'},
-      },
+lsp.configure("lua_ls", {
+    settings = {
+        Lua = {
+            diagnostics = {
+                -- Get the language server to recognize the `vim` global
+                globals = {'vim'},
+            },
+        },
     },
-  },
 })
 
 lsp.setup()
