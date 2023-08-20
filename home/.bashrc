@@ -56,9 +56,6 @@ if [ -n "$force_color_prompt" ]; then
     fi
 fi
 
-parse_git_branch() {
-  git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
-}
 
 # Colors
 black=$'\033[0;30m'
@@ -78,9 +75,12 @@ italic=$'\033[3m'
 underline=$'\033[4m'
 strikethrough=$'\033[9m'
 
+parse_git_branch() {
+    git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'
+}
 
 if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}${green}${bold}\u@\h${reset}${purple}$(parse_git_branch)${white}:\n${blue}${bold}\w${reset} '
+    PS1='${debian_chroot:+($debian_chroot)}${green}${bold}\u@\h${reset}:${blue}${bold} git:(${red}${bold}$(parse_git_branch)${reset}${blue}${bold})${reset}\n${yellow}${bold}\w${reset} '
 else
     PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
 fi
