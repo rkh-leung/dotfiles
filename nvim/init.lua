@@ -361,6 +361,7 @@ vim.keymap.set('n', '<leader>sf', require('telescope.builtin').find_files, { des
 vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { desc = '[S]earch current [W]ord' })
 vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
 vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
+vim.keymap.set('n', '<leader>r', require('telescope.builtin').resume, { desc = 'telescope [R]esume' })
 
 -- [[ Configure Treesitter ]]
 -- See `:help nvim-treesitter`
@@ -606,3 +607,22 @@ vim.keymap.set("n", "<A-a>", function() ui.nav_file(5) end)
 vim.keymap.set("n", "<A-s>", function() ui.nav_file(6) end)
 vim.keymap.set("n", "<A-d>", function() ui.nav_file(7) end)
 vim.keymap.set("n", "<A-f>", function() ui.nav_file(8) end)
+
+local m = {}
+function bind(op, outer_opts)
+  outer_opts = outer_opts or {noremap = true}
+  return function(lhs, rhs, opts)
+    opts = vim.tbl_extend('force',
+      outer_opts,
+      opts or {}
+    )
+    vim.keymap.set(op, lhs, rhs, opts)
+  end
+end
+
+m.nnoremap = bind('n')
+m.nnoremap('<leader>si', function()
+  require('telescope.builtin').grep_string({ search = vim.fn.input('Grep for > ')})
+end)
+
+return m
