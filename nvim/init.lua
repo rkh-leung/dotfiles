@@ -42,10 +42,6 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
   -- NOTE: First, some plugins that don't require any configuration
 
-  -- Git related plugins
-  'tpope/vim-fugitive',
-  'tpope/vim-rhubarb',
-
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
 
@@ -63,7 +59,7 @@ require('lazy').setup({
 
       -- Useful status updates for LSP
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-      { 'j-hui/fidget.nvim',       tag = 'legacy', opts = {} },
+      { 'j-hui/fidget.nvim', tag = "legacy", event = "LspAttach", opts = {} },
 
       -- Additional lua configuration, makes nvim stuff amazing!
       'folke/neodev.nvim',
@@ -88,6 +84,7 @@ require('lazy').setup({
 
   -- Useful plugin to show you pending keybinds.
   -- { 'folke/which-key.nvim', opts = {} },
+
   {
     -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
@@ -202,9 +199,13 @@ vim.o.incsearch = true
 -- Make line numbers default
 vim.wo.number = true
 
+vim.o.list = true
 vim.o.scrolloff = 8
 vim.o.colorcolumn = '80'
 vim.o.relativenumber = true
+vim.o.foldmethod = 'expr'
+vim.o.foldexpr = 'nvim_treesitter#foldexpr()'
+vim.o.foldenable =  false -- vim.cmd([[ set nofoldenable]])
 -- vim.opt.isfname:append("@-@")
 
 -- Enable mouse mode
@@ -237,7 +238,16 @@ vim.o.completeopt = 'menuone,noselect'
 
 -- NOTE: You should make sure your terminal supports this
 vim.o.termguicolors = true
+vim.o.showcmd = false
+vim.o.cmdheight = 1
 
+function LineNumberColors()
+  vim.api.nvim_set_hl(0, 'LineNrAbove', { fg='#51B3EC'})
+  vim.api.nvim_set_hl(0, 'LineNr', { fg='gold', bold=true })
+  vim.api.nvim_set_hl(0, 'LineNrBelow', { fg='#FB508F'})
+end
+
+LineNumberColors()
 -- [[ Basic Keymaps ]]
 
 -- Keymaps for better default experience
@@ -287,7 +297,7 @@ vim.keymap.set('n', '<leader>8', '8gt')
 vim.keymap.set('n', '<leader>9', '9gt')
 vim.keymap.set('n', '<leader>0', ':tablast<cr>')
 
-vim.api.nvim_set_keymap('t', '<ESC>', [[<C-\><C-n>]], { noremap = true })
+vim.api.nvim_set_keymap('t', '<esc>', [[<C-\><C-n>]], { noremap = true })
 -- Change the default singleline comment
 vim.api.nvim_set_keymap('n', '?', ':Comment<CR>', { noremap = true, silent = false })
 
@@ -314,6 +324,14 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 -- See `:help telescope` and `:help telescope.setup()`
 require('telescope').setup {
   defaults = {
+    layout_config = {
+      horizontal = {
+        height = 0.985,
+        preview_cutoff = 150,
+        prompt_position = "bottom",
+        width = 0.985
+      }
+    },
     mappings = {
       i = {
         ['<C-u>'] = false,
@@ -338,8 +356,8 @@ vim.keymap.set('n', '<leader>/', function()
 end, { desc = '[/] Fuzzily search in current buffer' })
 
 vim.keymap.set('n', '<leader>gf', require('telescope.builtin').git_files, { desc = 'Search [G]it [F]iles' })
-vim.keymap.set('n', '<leader>sf', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
 vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc = '[S]earch [H]elp' })
+vim.keymap.set('n', '<leader>sf', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
 vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { desc = '[S]earch current [W]ord' })
 vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
 vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
@@ -348,10 +366,12 @@ vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { de
 -- See `:help nvim-treesitter`
 require('nvim-treesitter.configs').setup {
   -- Add languages to be installed here that you want installed for treesitter
-  ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'typescript', 'vimdoc', 'vim' },
+  ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'typescript', 'vimdoc', 'vim', 'ruby', 'kdl', 'javascript', 'ocaml', 'html', 'python', 'git_config', 'gpg', 'regex', 'scss', 'sql', 'svelte', 'terraform', 'toml', 'yaml', 'xml', 'hcl', 'css', 'arduino'},
 
   -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
   auto_install = false,
+  sync_install = false,
+  ignore_install = {},
 
   highlight = { enable = true },
   indent = { enable = true },

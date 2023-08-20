@@ -1,0 +1,6 @@
+alias zejc="nvim ~/.config/zellij/config.kdl"
+alias aliases="nvim ~/.bash_aliases"
+alias bashrc="nvim ~/.bashrc"
+alias dotfiles="nvim ~/Personal/dotfiles/"
+alias config="nvim ~/.config/nvim/init.lua"
+alias concepts="nvim ~/Personal/notes/concepts.md"
