@@ -57,35 +57,6 @@ if [ -n "$force_color_prompt" ]; then
 fi
 
 
-# Colors
-black=$'\033[0;30m'
-red=$'\033[0;31m'
-green=$'\033[0;32m'
-yellow=$'\033[0;33m'
-blue=$'\033[0;34m'
-purple=$'\033[0;35m'
-cyan=$'\033[0;36m'
-white=$'\033[0;37m'
-reset=$'\033[00m'
-escape_prefix=$'\033['
-
-# Text styles
-bold=$'\033[1m'
-italic=$'\033[3m'
-underline=$'\033[4m'
-strikethrough=$'\033[9m'
-
-parse_git_branch() {
-    git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'
-}
-
-if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}${green}${bold}\u@\h${reset}:${blue}${bold} git:(${red}${bold}$(parse_git_branch)${reset}${blue}${bold})${reset}\n${yellow}${bold}\w${reset} '
-else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
-fi
-unset color_prompt force_color_prompt
-
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
@@ -146,6 +117,7 @@ export NVM_DIR="$HOME/.nvm"
 export ZELLIJ_AUTO_EXIT=true
 export ZELLIJ_AUTO_ATTACH=true
 
+eval "$(starship init bash)"
 eval "$(zellij setup --generate-auto-start bash)"
 
 if [[ -z "$ZELLIJ" ]]; then
