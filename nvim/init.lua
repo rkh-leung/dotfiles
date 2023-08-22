@@ -42,6 +42,10 @@ vim.opt.rtp:prepend(lazypath)
 require('lazy').setup({
   -- NOTE: First, some plugins that don't require any configuration
 
+  -- Git related plugins
+  'tpope/vim-fugitive',
+  'tpope/vim-rhubarb',
+
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
 
@@ -200,7 +204,7 @@ vim.o.incsearch = true
 vim.wo.number = true
 
 vim.o.list = true
-vim.o.scrolloff = 8
+vim.o.scrolloff = 0
 vim.o.colorcolumn = '80'
 vim.o.relativenumber = true
 vim.o.foldmethod = 'expr'
@@ -231,7 +235,7 @@ vim.wo.signcolumn = 'yes'
 
 -- Decrease update time
 vim.o.updatetime = 50
-vim.o.timeoutlen = 300
+vim.o.timeoutlen = 400
 
 -- Set completeopt to have a better completion experience
 vim.o.completeopt = 'menuone,noselect'
@@ -266,6 +270,18 @@ vim.keymap.set("n", "<leader>q", ":q! <CR>")
 vim.keymap.set("n", "<leader>f", vim.lsp.buf.format)
 vim.keymap.set("n", "Y", "yg$")
 vim.keymap.set("i", "<C-c>", "<Esc>")
+vim.keymap.set("n", "<A-i>", "<C-i>")
+vim.keymap.set("n", "<A-o>", "<C-o>")
+
+-- TODO: change it to a function
+vim.keymap.set("v", "<backspace>a", "\"ay")
+vim.keymap.set("n", "<backspace>A", "\"ap")
+vim.keymap.set("v", "<backspace>s", "\"sy")
+vim.keymap.set("n", "<backspace>s", "\"sp")
+vim.keymap.set("v", "<backspace>d", "\"dy")
+vim.keymap.set("n", "<backspace>d", "\"dp")
+vim.keymap.set("v", "<backspace>f", "\"fy")
+vim.keymap.set("n", "<backspace>f", "\"fp")
 
 -- greatest remap ever
 vim.keymap.set("x", "<leader>p", [["_dP]])
@@ -346,7 +362,7 @@ pcall(require('telescope').load_extension, 'fzf')
 
 -- See `:help telescope.builtin`
 vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
-vim.keymap.set('n', '<leader><space>', require('telescope.builtin').buffers, { desc = '[ ] Find existing buffers' })
+vim.keymap.set('n', '<leader><backspace>', require('telescope.builtin').buffers, { desc = '[ ] Find existing buffers' })
 vim.keymap.set('n', '<leader>/', function()
   -- You can pass additional configuration to telescope to change theme, layout, etc.
   require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
@@ -585,29 +601,33 @@ cmp.setup {
 require('comment').setup({
   languages = {
     sh = "#",
+    zsh = "#",
     php = "//",
     java = "//",
     ruby = "#",
     rust = "//",
     lua = "--",
+    kdl = "//",
   },
 })
 
+-- [[ Harpoon configuration ]]
 local mark = require("harpoon.mark")
 local ui = require("harpoon.ui")
 
 vim.keymap.set("n", "<leader>a", mark.add_file)
 vim.keymap.set("n", "<C-e>", ui.toggle_quick_menu)
 
-vim.keymap.set("n", "<A-j>", function() ui.nav_file(1) end)
-vim.keymap.set("n", "<A-k>", function() ui.nav_file(2) end)
-vim.keymap.set("n", "<A-l>", function() ui.nav_file(3) end)
-vim.keymap.set("n", "<A-;>", function() ui.nav_file(4) end)
-vim.keymap.set("n", "<A-a>", function() ui.nav_file(5) end)
-vim.keymap.set("n", "<A-s>", function() ui.nav_file(6) end)
-vim.keymap.set("n", "<A-d>", function() ui.nav_file(7) end)
-vim.keymap.set("n", "<A-f>", function() ui.nav_file(8) end)
+vim.keymap.set("n", "<C-A-j>", function() ui.nav_file(1) end)
+vim.keymap.set("n", "<C-A-k>", function() ui.nav_file(2) end)
+vim.keymap.set("n", "<C-A-l>", function() ui.nav_file(3) end)
+vim.keymap.set("n", "<C-A-;>", function() ui.nav_file(4) end)
+vim.keymap.set("n", "<C-A-a>", function() ui.nav_file(5) end)
+vim.keymap.set("n", "<C-A-s>", function() ui.nav_file(6) end)
+vim.keymap.set("n", "<C-A-d>", function() ui.nav_file(7) end)
+vim.keymap.set("n", "<C-A-f>", function() ui.nav_file(8) end)
 
+-- [[Additional telescope configuration ]]
 local m = {}
 function bind(op, outer_opts)
   outer_opts = outer_opts or {noremap = true}
