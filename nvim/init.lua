@@ -49,6 +49,7 @@ require('lazy').setup({
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
 
+  'nvim-treesitter/nvim-treesitter-context',
   'theprimeagen/harpoon',
   'EvgeniGenchev/comment-nvim',
   -- NOTE: This is where your plugins related to LSP can be installed.
@@ -203,13 +204,16 @@ vim.o.incsearch = true
 -- Make line numbers default
 vim.wo.number = true
 
+vim.o.wrap = false
+vim.o.tabstop = 4
+vim.o.shiftwidth = 8
 vim.o.list = true
 vim.o.scrolloff = 0
 vim.o.colorcolumn = '80'
 vim.o.relativenumber = true
 vim.o.foldmethod = 'expr'
 vim.o.foldexpr = 'nvim_treesitter#foldexpr()'
-vim.o.foldenable =  false -- vim.cmd([[ set nofoldenable]])
+vim.o.foldenable = false -- vim.cmd([[ set nofoldenable]])
 -- vim.opt.isfname:append("@-@")
 
 -- Enable mouse mode
@@ -246,9 +250,9 @@ vim.o.showcmd = false
 vim.o.cmdheight = 1
 
 function LineNumberColors()
-  vim.api.nvim_set_hl(0, 'LineNrAbove', { fg='#51B3EC'})
-  vim.api.nvim_set_hl(0, 'LineNr', { fg='gold', bold=true })
-  vim.api.nvim_set_hl(0, 'LineNrBelow', { fg='#FB508F'})
+  vim.api.nvim_set_hl(0, 'LineNrAbove', { fg = '#51B3EC' })
+  vim.api.nvim_set_hl(0, 'LineNr', { fg = 'gold', bold = true })
+  vim.api.nvim_set_hl(0, 'LineNrBelow', { fg = '#FB508F' })
 end
 
 LineNumberColors()
@@ -277,11 +281,11 @@ vim.keymap.set("n", "<A-o>", "<C-o>")
 vim.keymap.set("v", "<backspace>a", "\"ay")
 vim.keymap.set("n", "<backspace>A", "\"ap")
 vim.keymap.set("v", "<backspace>s", "\"sy")
-vim.keymap.set("n", "<backspace>s", "\"sp")
+vim.keymap.set("n", "<backspace>S", "\"sp")
 vim.keymap.set("v", "<backspace>d", "\"dy")
-vim.keymap.set("n", "<backspace>d", "\"dp")
+vim.keymap.set("n", "<backspace>D", "\"dp")
 vim.keymap.set("v", "<backspace>f", "\"fy")
-vim.keymap.set("n", "<backspace>f", "\"fp")
+vim.keymap.set("n", "<backspace>F", "\"fp")
 
 -- greatest remap ever
 vim.keymap.set("x", "<leader>p", [["_dP]])
@@ -383,7 +387,9 @@ vim.keymap.set('n', '<leader>r', require('telescope.builtin').resume, { desc = '
 -- See `:help nvim-treesitter`
 require('nvim-treesitter.configs').setup {
   -- Add languages to be installed here that you want installed for treesitter
-  ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'typescript', 'vimdoc', 'vim', 'ruby', 'kdl', 'javascript', 'ocaml', 'html', 'python', 'git_config', 'gpg', 'regex', 'scss', 'sql', 'svelte', 'terraform', 'toml', 'yaml', 'xml', 'hcl', 'css', 'arduino'},
+  ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'typescript', 'vimdoc', 'vim', 'ruby', 'kdl',
+    'javascript', 'ocaml', 'html', 'python', 'git_config', 'gpg', 'regex', 'scss', 'sql', 'svelte', 'terraform', 'toml',
+    'yaml', 'xml', 'hcl', 'css', 'arduino' },
 
   -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
   auto_install = false,
@@ -608,6 +614,7 @@ require('comment').setup({
     rust = "//",
     lua = "--",
     kdl = "//",
+    yaml = "//",
   },
 })
 
@@ -630,7 +637,7 @@ vim.keymap.set("n", "<C-A-f>", function() ui.nav_file(8) end)
 -- [[Additional telescope configuration ]]
 local m = {}
 function bind(op, outer_opts)
-  outer_opts = outer_opts or {noremap = true}
+  outer_opts = outer_opts or { noremap = true }
   return function(lhs, rhs, opts)
     opts = vim.tbl_extend('force',
       outer_opts,
@@ -642,7 +649,7 @@ end
 
 m.nnoremap = bind('n')
 m.nnoremap('<leader>si', function()
-  require('telescope.builtin').grep_string({ search = vim.fn.input('Grep for > ')})
+  require('telescope.builtin').grep_string({ search = vim.fn.input('Grep for > ') })
 end)
 
 return m

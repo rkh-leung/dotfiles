@@ -116,6 +116,7 @@ export NVM_DIR="$HOME/.nvm"
 
 export ZELLIJ_AUTO_EXIT=true
 export ZELLIJ_AUTO_ATTACH=true
+export EDITOR=nvim
 
 eval "$(starship init bash)"
 eval "$(zellij setup --generate-auto-start bash)"
