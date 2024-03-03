@@ -41,15 +41,16 @@ vim.opt.rtp:prepend(lazypath)
 --    as they will be available in your neovim runtime.
 require('lazy').setup({
   -- NOTE: First, some plugins that don't require any configuration
+  'nvim-tree/nvim-web-devicons',
 
   -- Git related plugins
   'tpope/vim-fugitive',
   'tpope/vim-rhubarb',
+  'sindrets/diffview.nvim',
 
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
 
-  'nvim-treesitter/nvim-treesitter-context',
   'theprimeagen/harpoon',
   'EvgeniGenchev/comment-nvim',
   -- NOTE: This is where your plugins related to LSP can be installed.
@@ -139,10 +140,7 @@ require('lazy').setup({
     'lukas-reineke/indent-blankline.nvim',
     -- Enable `lukas-reineke/indent-blankline.nvim`
     -- See `:help indent_blankline.txt`
-    opts = {
-      char = '┊',
-      show_trailing_blankline_indent = false,
-    },
+    main = "ibl",
   },
 
   -- "gc" to comment visual regions/lines
@@ -157,6 +155,7 @@ require('lazy').setup({
       -- Fuzzy Finder Algorithm which requires local dependencies to be built.
       -- Only load if `make` is available. Make sure you have the system
       -- requirements installed.
+      "debugloop/telescope-undo.nvim",
       {
         'nvim-telescope/telescope-fzf-native.nvim',
         -- NOTE: If you are having trouble with this installation,
@@ -167,6 +166,35 @@ require('lazy').setup({
         end,
       },
     },
+    config = function()
+      require("telescope").setup({
+        extensions = {
+          undo = {
+            -- telescope-undo.nvim config, see below
+            use_delta = true,
+            use_custom_command = nil, -- setting this implies `use_delta = false`. Accepted format is: { "bash", "-c", "echo '$DIFF' | delta" }
+            side_by_side = false,
+            diff_context_lines = vim.o.scrolloff,
+            entry_format = "state #$ID, $STAT, $TIME",
+            time_format = "",
+            mappings = {
+              i = {
+                -- IMPORTANT: Note that telescope-undo must be available when telescope is configured if
+                -- you want to replicate these defaults and use the following actions. This means
+                -- installing as a dependency of telescope in it's `requirements` and loading this
+                -- extension from there instead of having the separate plugin definition as outlined
+                -- above.
+                ["<cr>"] = require("telescope-undo.actions").yank_additions,
+                ["<S-cr>"] = require("telescope-undo.actions").yank_deletions,
+                ["<C-cr>"] = require("telescope-undo.actions").restore,
+              },
+            },
+          },
+        },
+      })
+      require("telescope").load_extension("undo")
+      -- optional: vim.keymap.set("n", "<leader>u", "<cmd>Telescope undo<cr>")
+    end,
   },
 
   {
@@ -177,6 +205,7 @@ require('lazy').setup({
     },
     build = ':TSUpdate',
   },
+  'nvim-treesitter/nvim-treesitter-context',
 
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
   --       These are some example plugins that I've included in the kickstart repository.
@@ -206,7 +235,8 @@ vim.wo.number = true
 
 vim.o.wrap = false
 vim.o.tabstop = 4
-vim.o.shiftwidth = 8
+vim.o.shiftwidth = 4
+vim.o.expandtab = true
 vim.o.list = true
 vim.o.scrolloff = 0
 vim.o.colorcolumn = '80'
@@ -222,7 +252,7 @@ vim.o.mouse = 'a'
 -- Sync clipboard between OS and Neovim.
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
-vim.o.clipboard = 'unnamedplus'
+vim.o.clipboard = 'unnamed'
 
 -- Enable break indent
 vim.o.breakindent = true
@@ -242,7 +272,7 @@ vim.o.updatetime = 50
 vim.o.timeoutlen = 400
 
 -- Set completeopt to have a better completion experience
-vim.o.completeopt = 'menuone,noselect'
+vim.o.completeopt = 'menu,menuone,noinsert,noselect'
 
 -- NOTE: You should make sure your terminal supports this
 vim.o.termguicolors = true
@@ -566,15 +596,18 @@ cmp.setup {
       luasnip.lsp_expand(args.body)
     end,
   },
+  completion = {
+    completeopt = 'menu,menuone,noinsert,noselect',
+  },
   mapping = cmp.mapping.preset.insert {
     ['<C-n>'] = cmp.mapping.select_next_item(),
     ['<C-p>'] = cmp.mapping.select_prev_item(),
-    ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+    ['<C-b>'] = cmp.mapping.scroll_docs(-4),
     ['<C-f>'] = cmp.mapping.scroll_docs(4),
     ['<C-Space>'] = cmp.mapping.complete {},
     ['<CR>'] = cmp.mapping.confirm {
       behavior = cmp.ConfirmBehavior.Replace,
-      select = true,
+      select = false,
     },
     ['<Tab>'] = cmp.mapping(function(fallback)
       if cmp.visible() then
@@ -598,11 +631,14 @@ cmp.setup {
   sources = {
     { name = 'nvim_lsp' },
     { name = 'luasnip' },
+    { name = 'path' },
   },
 }
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
+--
+require("ibl").setup()
 
 require('comment').setup({
   languages = {
