@@ -78,6 +78,17 @@ return {
 			vim.keymap.set("n", "<leader>s.", builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
 			vim.keymap.set("n", "<leader><leader>", builtin.buffers, { desc = "[ ] Find existing buffers" })
 			vim.keymap.set("n", "<leader>gf", require("telescope.builtin").git_files, { desc = "Search [G]it [F]iles" })
+			vim.keymap.set("n", "<leader>si", function() -- Prompt the user for a search string
+				local search_term = vim.fn.input("Grep for > ")
+				-- If the user cancels the input (e.g., by pressing Esc), input() returns an empty string.
+				-- You might want to avoid opening Telescope if no search term is provided.
+				if search_term == nil or search_term == "" then
+					print("Grep cancelled.")
+					return
+				end
+				-- Require Telescope and run grep_string with the provided search term
+				require("telescope.builtin").grep_string({ search = search_term })
+			end, { noremap = true, silent = true, desc = "Telescope Grep string (prompt)" })
 
 			-- Slightly advanced example of overriding default behavior and theme
 			vim.keymap.set("n", "<leader>/", function()
