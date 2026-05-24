@@ -164,6 +164,18 @@ return {
 			-- Diagnostic Config
 			-- See :help vim.diagnostic.Opts
 			vim.diagnostic.config({
+				virtual_lines = {
+					format = function(diagnostic)
+						local diagnostic_message = {
+							[vim.diagnostic.severity.ERROR] = diagnostic.message,
+							[vim.diagnostic.severity.WARN] = diagnostic.message,
+							[vim.diagnostic.severity.INFO] = diagnostic.message,
+							[vim.diagnostic.severity.HINT] = diagnostic.message,
+						}
+						return diagnostic_message[diagnostic.severity]
+					end,
+				},
+				virtual_text = false,
 				severity_sort = true,
 				float = {
 					border = "rounded",
@@ -182,19 +194,6 @@ return {
 						[vim.diagnostic.severity.HINT] = "󰌶 ",
 					},
 				} or {},
-				virtual_text = {
-					source = "if_many",
-					spacing = 2,
-					format = function(diagnostic)
-						local diagnostic_message = {
-							[vim.diagnostic.severity.ERROR] = diagnostic.message,
-							[vim.diagnostic.severity.WARN] = diagnostic.message,
-							[vim.diagnostic.severity.INFO] = diagnostic.message,
-							[vim.diagnostic.severity.HINT] = diagnostic.message,
-						}
-						return diagnostic_message[diagnostic.severity]
-					end,
-				},
 			})
 
 			-- LSP servers and clients are able to communicate to each other what features they support.
@@ -214,12 +213,10 @@ return {
 			--        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
 			local servers = {
 				clangd = {},
-				gopls = {},
 				pyright = {},
 				rust_analyzer = {},
 				ast_grep = {},
 				bashls = {},
-				denols = {},
 				ts_ls = {},
 				yamlls = {},
 				-- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
@@ -230,6 +227,17 @@ return {
 				-- But for many setups, the LSP (`ts_ls`) will work just fine
 				-- ts_ls = {},
 				--
+
+				gopls = {
+					completeUnimported = true,
+					usePlaceholders = true,
+					buildFlags = {},
+					gofumpt = false, -- Set to true if you use gofumpt
+					-- Use goimports for formatting (this is key!)
+					formatting = {
+						goimports = true, -- Use goimports for formatting
+					},
+				},
 
 				lua_ls = {
 					-- cmd = { ... },

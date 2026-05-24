@@ -52,16 +52,16 @@ vim.keymap.set("n", "<leader>b", ":3s/.*\\zs.*/\\=toupper(system('git rev-parse 
 vim.keymap.set("n", "<leader>x", "<cmd>!chmod +x %<CR>", { silent = true })
 
 -- Go to tab by number
-vim.keymap.set("n", "<leader>1", "1gt")
-vim.keymap.set("n", "<leader>2", "2gt")
-vim.keymap.set("n", "<leader>3", "3gt")
-vim.keymap.set("n", "<leader>4", "4gt")
-vim.keymap.set("n", "<leader>5", "5gt")
-vim.keymap.set("n", "<leader>6", "6gt")
-vim.keymap.set("n", "<leader>7", "7gt")
-vim.keymap.set("n", "<leader>8", "8gt")
-vim.keymap.set("n", "<leader>9", "9gt")
-vim.keymap.set("n", "<leader>0", ":tablast<cr>")
+-- vim.keymap.set("n", "<leader>1", "1gt")
+-- vim.keymap.set("n", "<leader>2", "2gt")
+-- vim.keymap.set("n", "<leader>3", "3gt")
+-- vim.keymap.set("n", "<leader>4", "4gt")
+-- vim.keymap.set("n", "<leader>5", "5gt")
+-- vim.keymap.set("n", "<leader>6", "6gt")
+-- vim.keymap.set("n", "<leader>7", "7gt")
+-- vim.keymap.set("n", "<leader>8", "8gt")
+-- vim.keymap.set("n", "<leader>9", "9gt")
+-- vim.keymap.set("n", "<leader>0", ":tablast<cr>")
 
 -- Not sure about nvim_set_keymap
 -- Change the default singleline comment
@@ -95,3 +95,10 @@ vim.keymap.set("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" }
 -- vim.keymap.set("n", "<C-S-l>", "<C-w>L", { desc = "Move window to the right" })
 -- vim.keymap.set("n", "<C-S-j>", "<C-w>J", { desc = "Move window to the lower" })
 -- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
+
+vim.keymap.set("", "<leader>dl", function()
+	vim.diagnostic.config({
+		virtual_lines = not vim.diagnostic.config().virtual_lines,
+		virtual_text = not vim.diagnostic.config().virtual_text,
+	})
+end, { desc = "Toggle [D]iagnostic [L]ines" })

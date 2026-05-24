@@ -24,6 +24,7 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
 	{ import = "k.plugins" },
 	change_detection = { enabled = true, notify = false },
+	concurrency = 5, -- Limit to 5 simultaneous downloads instead of the default (which is huge)
 	-- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
 	-- "tpope/vim-sleuth", -- Detect tabstop and shiftwidth automatically
 	-- NOTE: Plugins can also be added by using a table,
